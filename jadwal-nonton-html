@@ -235,12 +235,12 @@
 
     <div class="detail-box">
       <div class="detail-row"><span class="icon">📅</span> Sabtu, <span class="highlight">&nbsp;11 Juli 2026</span></div>
-      <div class="detail-row"><span class="icon">⏰</span> Jemput jam <span class="highlight">&nbsp;14.00</span></div>
+      <div class="detail-row"><span class="icon">⏰</span> Di Jemput jam <span class="highlight">&nbsp;14.00</span></div>
       <div class="detail-row"><span class="icon">📍</span> Cinere Bellevue / One Belpark Mall</div>
       <div class="detail-row"><span class="icon">🎞️</span> Nonton film <span class="highlight">&nbsp;"Obsession"</span></div>
     </div>
 
-    <div class="question">Mau nonton sama aku ga? 👀</div>
+    <div class="question">Mau nonton sama aku ga ni? 👀</div>
 
     <div class="button-arena" id="arena">
       <button class="btn btn-mau" id="btnMau" onclick="pilihMau()">mau</button>
@@ -258,6 +258,7 @@
       Sip, jadi ya! Sabtu, 11 Juli 2026 jam 2 siang aku jemput.<br>
       Kita nonton <b>Obsession</b> di Cinere Bellevue atau One Belpark Mall.<br><br>
       Sampai ketemu Sabtu ini! 🎬🍿
+      Love you 😘😘😘
     </p>
   </div>
 </div>
