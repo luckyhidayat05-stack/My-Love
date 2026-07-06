@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajakan Nonton 🎬</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* bintang-bintang kecil di background biar berasa bioskop */
+  .stars {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: twinkle 3s infinite ease-in-out;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 40px 32px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: floatIn 0.8s ease-out;
+  }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .emoji-top {
+    font-size: 48px;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    color: #fff;
+    font-size: 22px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .detail-box {
+    background: rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #e8e8f0;
+    font-size: 14.5px;
+    margin: 8px 0;
+  }
+
+  .detail-row .icon {
+    font-size: 18px;
+    width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .highlight {
+    color: #ffd166;
+    font-weight: 600;
+  }
+
+  .question {
+    color: #fff;
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 26px;
+  }
+
+  /* area tombol dibuat relatif & tinggi tetap supaya tombol-tombol bisa
+     berpindah posisi bebas tanpa bikin layout kacau */
+  .button-arena {
+    position: relative;
+    height: 320px;
+    width: 100%;
+  }
+
+  .btn {
+    position: absolute;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .btn-mau {
+    top: 10px;
+    left: 12px;
+    padding: 12px 26px;
+    font-size: 15px;
+    background: rgba(255,255,255,0.12);
+    color: #cfd3e0;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .btn-mau:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .btn-banget {
+    top: 10px;
+    right: 12px;
+    background: linear-gradient(135deg, #ff5e78, #ff9a5a);
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(255, 94, 120, 0.45);
+    padding: 14px 30px;
+    font-size: 16px;
+  }
+
+  .btn-banget:hover {
+    filter: brightness(1.08);
+  }
+
+  .btn-gamau {
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 22px;
+    font-size: 13px;
+    background: rgba(255,255,255,0.06);
+    color: #9a9db0;
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: all 0.25s ease-out;
+  }
+  .btn-gamau:hover {
+    background: rgba(255,255,255,0.06);
+  }
+
+  .caption {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #b8bcd0;
+    min-height: 18px;
+    transition: all 0.3s;
+  }
+
+  .success-screen {
+    display: none;
+    animation: popIn 0.5s ease-out;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .success-screen .emoji-top {
+    font-size: 60px;
+  }
+
+  .success-screen h1 {
+    font-size: 24px;
+    color: #ffd166;
+  }
+
+  .success-screen p {
+    color: #e8e8f0;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+
+  .confetti {
+    position: fixed;
+    top: -10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    z-index: 5;
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(110vh) rotate(360deg);
+      opacity: 0.3;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="card" id="mainCard">
+  <div id="questionScreen">
+    <div class="emoji-top">🎬🍿</div>
+    <h1>Ada rencana nih buat Sabtu ini...</h1>
+
+    <div class="detail-box">
+      <div class="detail-row"><span class="icon">📅</span> Sabtu, <span class="highlight">&nbsp;11 Juli 2026</span></div>
+      <div class="detail-row"><span class="icon">⏰</span> Jemput jam <span class="highlight">&nbsp;14.00</span></div>
+      <div class="detail-row"><span class="icon">📍</span> Cinere Bellevue / One Belpark Mall</div>
+      <div class="detail-row"><span class="icon">🎞️</span> Nonton film <span class="highlight">&nbsp;"Obsession"</span></div>
+    </div>
+
+    <div class="question">Mau nonton sama aku ga? 👀</div>
+
+    <div class="button-arena" id="arena">
+      <button class="btn btn-mau" id="btnMau" onclick="pilihMau()">mau</button>
+      <button class="btn btn-banget" id="btnBanget" onclick="pilihBanget()" style="font-size:14px; padding: 10px 20px;">mau banget</button>
+      <button class="btn btn-gamau" id="btnGamau" onmouseenter="kaburGamau()" onclick="pilihGamau(event)">gamau</button>
+    </div>
+
+    <div class="caption" id="caption"></div>
+  </div>
+
+  <div class="success-screen" id="successScreen">
+    <div class="emoji-top">🥳🎉</div>
+    <h1>Yeay, mau banget!! 💕</h1>
+    <p>
+      Sip, jadi ya! Sabtu, 11 Juli 2026 jam 2 siang aku jemput.<br>
+      Kita nonton <b>Obsession</b> di Cinere Bellevue atau One Belpark Mall.<br><br>
+      Sampai ketemu Sabtu ini! 🎬🍿
+    </p>
+  </div>
+</div>
+
+<script>
+  // bikin bintang random buat background
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 40; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    starsContainer.appendChild(star);
+  }
+
+  let level = 0; // seberapa banyak dia klik "mau"
+  const arena = document.getElementById('arena');
+  const btnMau = document.getElementById('btnMau');
+  const btnBanget = document.getElementById('btnBanget');
+  const caption = document.getElementById('caption');
+
+  const captions = [
+    "hmm... coba deh yang satunya 😏",
+    "yaaah, dicoba lagi dong~",
+    "dikit lagi tuh ketebak jawabannya 😌",
+    "yakin nih tetep milih itu? 👉👈",
+    "udah kelihatan banget jawabannya kan? 😂"
+  ];
+
+  function randomPos() {
+    // area arena: width penuh, height 220px
+    const arenaW = arena.offsetWidth;
+    const arenaH = arena.offsetHeight;
+    const btnW = btnBanget.offsetWidth;
+    const btnH = btnBanget.offsetHeight;
+
+    const maxLeft = Math.max(arenaW - btnW - 10, 10);
+    const maxTop = Math.max(arenaH - btnH - 10, 10);
+
+    const left = Math.random() * maxLeft;
+    const top = Math.random() * maxTop;
+
+    return { left, top };
+  }
+
+  function pilihMau() {
+    level++;
+
+    // ukuran tombol "mau banget" makin besar tiap kali "mau" dipilih
+    const baseFontSize = 14;
+    const baseSizePadding = 10;
+    const newFontSize = Math.min(baseFontSize + level * 4, 34);
+    const newPaddingV = Math.min(baseSizePadding + level * 4, 26);
+    const newPaddingH = newPaddingV + 10;
+
+    btnBanget.style.fontSize = newFontSize + 'px';
+    btnBanget.style.padding = newPaddingV + 'px ' + newPaddingH + 'px';
+
+    // tombol "mau" jadi mengecil & pudar dikit, biar makin ga menarik dipilih
+    const mauFontSize = Math.max(15 - level * 1.5, 9);
+    const mauOpacity = Math.max(1 - level * 0.15, 0.35);
+    btnMau.style.fontSize = mauFontSize + 'px';
+    btnMau.style.opacity = mauOpacity;
+    btnMau.style.padding = Math.max(12 - level, 6) + 'px ' + Math.max(26 - level * 2, 14) + 'px';
+
+    // pindahkan tombol "mau banget" ke posisi random
+    const pos = randomPos();
+    btnBanget.style.left = pos.left + 'px';
+    btnBanget.style.top = pos.top + 'px';
+    btnBanget.style.transform = 'none';
+
+    // juga geser dikit tombol "mau" biar makin usil (opsional, tetap di area atas)
+    const arenaW = arena.offsetWidth;
+    const wobble = (Math.random() - 0.5) * 60;
+    btnMau.style.left = (arenaW / 2 + wobble) + 'px';
+    btnMau.style.transform = 'translateX(-50%)';
+    btnMau.style.top = (Math.random() * 20) + 'px';
+
+    // update caption
+    const capIndex = Math.min(level - 1, captions.length - 1);
+    caption.textContent = captions[capIndex];
+    caption.style.fontSize = (13 + level) + 'px';
+  }
+
+  const btnGamau = document.getElementById('btnGamau');
+  const gagalCaptions = [
+    "eh gagal, coba lagi 🙈",
+    "yah kepencet lain, coba lagi deh~",
+    "waduh ga kena, ulangi ya 😅",
+    "hampir! tapi belum berhasil 😆",
+    "sistemnya lagi eror kalau pilih ini 🛠️"
+  ];
+
+  function randomArenaPos(el) {
+    const arenaW = arena.offsetWidth;
+    const arenaH = arena.offsetHeight;
+    const elW = el.offsetWidth;
+    const elH = el.offsetHeight;
+
+    const maxLeft = Math.max(arenaW - elW - 10, 10);
+    const maxTop = Math.max(arenaH - elH - 10, 10);
+
+    return {
+      left: Math.random() * maxLeft,
+      top: Math.random() * maxTop
+    };
+  }
+
+  function kaburGamau() {
+    // begitu kursor mendekat, tombol langsung kabur ke posisi lain
+    const pos = randomArenaPos(btnGamau);
+    btnGamau.style.left = pos.left + 'px';
+    btnGamau.style.top = pos.top + 'px';
+    btnGamau.style.bottom = 'auto';
+    btnGamau.style.transform = 'none';
+  }
+
+  function pilihGamau(e) {
+    // seandainya somehow tetap kena klik, tetap dianggap gagal
+    e.preventDefault();
+    const msg = gagalCaptions[Math.floor(Math.random() * gagalCaptions.length)];
+    caption.textContent = msg;
+    caption.style.color = '#ff8888';
+    kaburGamau();
+    setTimeout(() => { caption.style.color = ''; }, 1500);
+  }
+
+  function pilihBanget() {
+    document.getElementById('questionScreen').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    launchConfetti();
+  }
+
+  function launchConfetti() {
+    const colors = ['#ff5e78', '#ff9a5a', '#ffd166', '#06d6a0', '#118ab2'];
+    for (let i = 0; i < 60; i++) {
+      const conf = document.createElement('div');
+      conf.className = 'confetti';
+      conf.style.left = Math.random() * 100 + 'vw';
+      conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+      conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      conf.style.opacity = Math.random() * 0.5 + 0.5;
+      document.body.appendChild(conf);
+      setTimeout(() => conf.remove(), 4500);
+    }
+  }
+</script>
+
+</body>
+</html>
