@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Kamu 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ===== Palet: surat cinta vintage — kertas tua, merah anggur, emas foil ===== */
+    --paper: #f6ecd9;
+    --paper-deep: #ecdcb9;
+    --paper-shadow: #d9c49a;
+    --ink: #3c2a1e;
+    --ink-soft: #6b5340;
+    --burgundy: #7c2d35;
+    --burgundy-deep: #5a1f26;
+    --gold: #b9924a;
+    --gold-light: #d9b876;
+    --blush: #c98a8f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{ height:100%; }
+  body{
+    font-family:'EB Garamond', serif;
+    background:
+      radial-gradient(ellipse at top left, rgba(255,255,255,.25), transparent 55%),
+      var(--paper);
+    background-attachment:fixed;
+    color: var(--ink);
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* subtle paper grain */
+  body::before{
+    content:'';
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:0;
+    opacity:.5;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.015) 0px, transparent 1px, transparent 2px, rgba(0,0,0,.015) 3px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.012) 0px, transparent 1px, transparent 2px, rgba(0,0,0,.012) 3px);
+  }
+
+  .screen{
+    display:none;
+    min-height:100vh;
+    width:100%;
+    position:relative;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding: 40px 20px;
+    text-align:center;
+  }
+  .screen.active{ display:flex; animation: fadeUp .8s ease; }
+  @keyframes fadeUp{
+    from{ opacity:0; transform: translateY(14px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .eyebrow{
+    font-family:'Dancing Script', cursive;
+    font-size: 22px;
+    color: var(--burgundy);
+    margin-bottom: 6px;
+    z-index:1;
+  }
+  h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size: clamp(30px, 7vw, 46px);
+    color: var(--burgundy-deep);
+    margin-bottom: 10px;
+    z-index:1;
+    letter-spacing: .5px;
+  }
+  p.sub{
+    font-style: italic;
+    color: var(--ink-soft);
+    margin-bottom: 26px;
+    z-index:1;
+    max-width: 380px;
+  }
+  .rule{
+    width: 70px; height:2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 14px auto 22px;
+    z-index:1;
+  }
+
+  /* ============ FALLING PETALS BG ============ */
+  .heart-bg{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+  .fh{ position:absolute; top:-40px; color: var(--blush); opacity:.55; animation: fall linear infinite; }
+  @keyframes fall{ to{ transform: translateY(110vh) rotate(360deg); opacity:0; } }
+
+  /* ============ WAX SEAL / ENVELOPE (opening) ============ */
+  .envelope-wrap{ z-index:1; position:relative; }
+  .envelope{
+    width:180px; height:120px;
+    background: linear-gradient(180deg, #efe0c4, #e3cfa2);
+    border:1px solid var(--gold);
+    border-radius:4px;
+    position:relative;
+    box-shadow: 0 14px 30px rgba(90,31,38,.2);
+  }
+  .envelope::before, .envelope::after{
+    content:'';
+    position:absolute; top:0;
+    width:0; height:0;
+    border-top: 60px solid #e8d5ac;
+  }
+  .envelope::before{
+    left:0;
+    border-right: 90px solid transparent;
+  }
+  .envelope::after{
+    right:0;
+    border-left: 90px solid transparent;
+  }
+  .seal{
+    position:absolute;
+    left:50%; top:50%;
+    transform: translate(-50%,-50%);
+    width:52px; height:52px;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--burgundy) 70%);
+    display:flex; align-items:center; justify-content:center;
+    color:#f6ecd9;
+    font-size:20px;
+    cursor:pointer;
+    box-shadow: 0 6px 14px rgba(90,31,38,.4), inset 0 0 6px rgba(0,0,0,.3);
+    animation: pulse 1.8s ease-in-out infinite;
+    z-index:2;
+  }
+  @keyframes pulse{ 0%,100%{ transform: translate(-50%,-50%) scale(1); } 50%{ transform: translate(-50%,-50%) scale(1.08); } }
+  .envelope-label{
+    margin-top:20px;
+    color: var(--burgundy);
+    font-family:'Dancing Script', cursive;
+    font-size: 20px;
+    z-index:1;
+  }
+
+  /* ============ TIMER ============ */
+  .timer-box{
+    background: var(--paper-deep);
+    border: 1px solid var(--paper-shadow);
+    border-radius: 4px;
+    padding: 26px 22px;
+    box-shadow: 0 10px 26px rgba(90,31,38,.12);
+    z-index:1;
+    max-width: 400px;
+    width:100%;
+  }
+  .timer-caption{ color: var(--ink-soft); font-size:14px; font-style:italic; }
+  .timer-grid{ display:flex; justify-content:center; gap: 10px; margin-top: 16px; flex-wrap:wrap; }
+  .timer-unit{
+    background: var(--paper);
+    border: 1px solid var(--paper-shadow);
+    border-radius: 4px;
+    padding: 12px 14px;
+    min-width: 66px;
+  }
+  .timer-unit .num{ font-family:'Cormorant Garamond', serif; font-size: 26px; font-weight:600; color: var(--burgundy); }
+  .timer-unit .label{ font-size: 11px; color:#8a7259; text-transform:uppercase; letter-spacing:1px; }
+
+  /* ============ POLAROID GALLERY ============ */
+  .gallery-stack{
+    position:relative;
+    width: 280px;
+    height: 320px;
+    z-index:1;
+  }
+  .polaroid{
+    position:absolute;
+    top:10px; left:10px;
+    width: 260px;
+    background:#fffdf8;
+    padding: 14px 14px 40px;
+    box-shadow: 0 14px 24px rgba(0,0,0,.22);
+    border-radius: 2px;
+    opacity:0;
+    transform: rotate(-6deg) scale(.96);
+    transition: opacity .9s ease, transform .9s ease;
+  }
+  .polaroid.show{ opacity:1; transform: rotate(-2deg) scale(1); }
+  .polaroid img{ width:100%; height:220px; object-fit:cover; display:block; background:var(--paper-deep); }
+  .polaroid .cap{
+    font-family:'Dancing Script', cursive;
+    font-size: 18px;
+    color: var(--ink-soft);
+    text-align:center;
+    margin-top:10px;
+  }
+  .placeholder-card{
+    width: 260px;
+    background:#fffdf8;
+    padding: 22px 18px;
+    box-shadow: 0 14px 24px rgba(0,0,0,.18);
+    border-radius:2px;
+    color:#a5806a;
+    font-size:13px;
+    line-height:1.6;
+  }
+  .placeholder-card code{
+    display:block;
+    margin-top:8px;
+    background: var(--paper-deep);
+    padding:6px 8px;
+    border-radius:3px;
+    font-size:11px;
+    color: var(--burgundy);
+  }
+  .dots{ display:flex; gap:8px; margin-top:20px; z-index:1; }
+  .dot{ width:7px; height:7px; border-radius:50%; background: var(--paper-shadow); }
+  .dot.active{ background: var(--burgundy); }
+
+  /* ============ LETTER ============ */
+  .letter{
+    background: var(--paper);
+    border: 1px solid var(--paper-shadow);
+    border-radius: 2px;
+    padding: 34px 28px;
+    max-width: 440px;
+    box-shadow: 0 10px 28px rgba(0,0,0,.12);
+    z-index:1;
+    font-size: 18px;
+    line-height: 1.85;
+    text-align:left;
+    color: var(--ink);
+    position:relative;
+  }
+  .letter::first-letter{
+    font-family:'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight:600;
+    color: var(--burgundy);
+    float:left;
+    line-height:.8;
+    margin: 4px 8px 0 0;
+  }
+  .letter .sign{
+    text-align:right;
+    margin-top:20px;
+    font-family:'Dancing Script', cursive;
+    font-size: 26px;
+    color: var(--burgundy);
+  }
+
+  /* ============ FINAL ============ */
+  .big-seal{
+    width:90px; height:90px;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--burgundy) 70%);
+    display:flex; align-items:center; justify-content:center;
+    color:#f6ecd9; font-size:34px;
+    box-shadow: 0 10px 24px rgba(90,31,38,.4);
+    animation: beat 1.2s ease-in-out infinite;
+    z-index:1;
+  }
+  @keyframes beat{ 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.1); } }
+
+  button{
+    margin-top: 28px;
+    padding: 13px 30px;
+    font-size: 15px;
+    font-family:'EB Garamond', serif;
+    letter-spacing: .5px;
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    background: var(--burgundy);
+    color:#f6ecd9;
+    cursor:pointer;
+    box-shadow: 0 8px 18px rgba(90,31,38,.3);
+    transition: transform .15s ease, background .2s ease;
+    z-index:1;
+  }
+  button:hover{ background: var(--burgundy-deep); transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<div class="heart-bg" id="heartBg"></div>
+
+<!-- SCREEN 0: OPENING -->
+<div class="screen active" id="screen0">
+  <div class="envelope-wrap">
+    <div class="envelope"><div class="seal" id="openEnvelope">♥</div></div>
+    <div class="envelope-label">buka suratnya, yuk</div>
+  </div>
+</div>
+
+<!-- SCREEN 1: TIMER -->
+<div class="screen" id="screen1">
+  <div class="eyebrow">untuk seseorang yang istimewa</div>
+  <h1>Hai, Sayang</h1>
+  <p class="sub">sudah berapa lama ya kita saling menulis cerita bersama...</p>
+  <div class="timer-box">
+    <div class="timer-caption">sudah bersama selama</div>
+    <div class="timer-grid">
+      <div class="timer-unit"><div class="num" id="tDays">0</div><div class="label">Hari</div></div>
+      <div class="timer-unit"><div class="num" id="tHours">0</div><div class="label">Jam</div></div>
+      <div class="timer-unit"><div class="num" id="tMins">0</div><div class="label">Menit</div></div>
+      <div class="timer-unit"><div class="num" id="tSecs">0</div><div class="label">Detik</div></div>
+    </div>
+  </div>
+  <button onclick="goTo(2)">Lanjut →</button>
+</div>
+
+<!-- SCREEN 2: GALLERY -->
+<div class="screen" id="screen2">
+  <div class="eyebrow">album kecil kita</div>
+  <h1>Kenangan Kita</h1>
+  <div class="rule"></div>
+  <div class="gallery-stack" id="galleryStack">
+    <div class="placeholder-card">
+      Belum ada foto ditambahkan.<br><br>
+      Kirim beberapa foto ke aku, atau edit sendiri bagian ini di kode:
+      <code>const photos = [<br>&nbsp;&nbsp;{src:'foto1.jpg', cap:'liburan pertama'},<br>&nbsp;&nbsp;{src:'foto2.jpg', cap:'ulang tahunmu'}<br>];</code>
+    </div>
+  </div>
+  <div class="dots" id="dots"></div>
+  <button onclick="goTo(3)">Lanjut →</button>
+</div>
+
+<!-- SCREEN 3: LETTER -->
+<div class="screen" id="screen3">
+  <div class="eyebrow">sepucuk surat</div>
+  <h1>Untukmu</h1>
+  <div class="letter">
+    Hai sayang,<br><br>
+    Aku cuma mau bilang, makasih ya udah selalu ada buat aku.
+    Setiap hari bareng kamu selalu jadi hari yang paling aku tunggu.
+    Aku sayang kamu, lebih dari yang bisa aku ungkapin lewat kata-kata.<br><br>
+    Semoga kita selalu sehat, bahagia, dan makin sayang-sayangan ya.
+    <div class="sign">— dari aku, buat kamu ❤</div>
+  </div>
+  <button onclick="goTo(4)">Lanjut →</button>
+</div>
+
+<!-- SCREEN 4: FINAL -->
+<div class="screen" id="screen4">
+  <div class="big-seal">♥</div>
+  <h1 style="margin-top:20px;">I Love You</h1>
+  <p class="sub">terima kasih sudah membaca sampai sini</p>
+  <button onclick="goTo(0);">Ulangi dari awal</button>
+</div>
+
+<!-- BACKGROUND MUSIC: ganti src dengan link lagu kamu -->
+<audio id="bgMusic" loop>
+  <source src="GANTI_DENGAN_LINK_LAGU.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  /* ================= EDIT BAGIAN INI ================= */
+  // Tanggal jadian (format: 'YYYY-MM-DDTHH:mm:ss')
+  const startDate = new Date('2024-01-01T00:00:00');
+
+  // Daftar foto kalian: src = link/nama file foto, cap = keterangan singkat (opsional)
+  // Contoh: const photos = [{src:'foto1.jpg', cap:'liburan pertama'}, {src:'https://.../foto2.jpg', cap:'ulang tahunmu'}];
+  const photos = []; // <-- masukkan foto kamu di sini
+  /* ===================================================== */
+
+  const screens = document.querySelectorAll('.screen');
+  function goTo(n){
+    screens.forEach(s => s.classList.remove('active'));
+    document.getElementById('screen'+n).classList.add('active');
+  }
+
+  document.getElementById('openEnvelope').addEventListener('click', () => {
+    const music = document.getElementById('bgMusic');
+    music.play().catch(()=>{});
+    goTo(1);
+  });
+
+  // ===== TIMER =====
+  function updateTimer(){
+    const now = new Date();
+    let diff = Math.max(0, now - startDate);
+    document.getElementById('tDays').textContent = Math.floor(diff / 86400000);
+    document.getElementById('tHours').textContent = Math.floor((diff / 3600000) % 24);
+    document.getElementById('tMins').textContent = Math.floor((diff / 60000) % 60);
+    document.getElementById('tSecs').textContent = Math.floor((diff / 1000) % 60);
+  }
+  setInterval(updateTimer, 1000);
+  updateTimer();
+
+  // ===== GALLERY (polaroid crossfade) =====
+  const stackEl = document.getElementById('galleryStack');
+  const dotsEl = document.getElementById('dots');
+  let galleryIdx = 0;
+  if(photos.length > 0){
+    stackEl.innerHTML = '';
+    photos.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'polaroid' + (i===0 ? ' show' : '');
+      const rot = (i % 2 === 0 ? -4 : 4) + (Math.random()*3).toFixed(1);
+      card.style.setProperty('--r', rot + 'deg');
+      card.innerHTML = `<img src="${p.src}" alt=""><div class="cap">${p.cap || ''}</div>`;
+      stackEl.appendChild(card);
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i===0 ? ' active' : '');
+      dotsEl.appendChild(dot);
+    });
+    setInterval(() => {
+      const cards = stackEl.querySelectorAll('.polaroid');
+      const dots = dotsEl.querySelectorAll('.dot');
+      cards[galleryIdx].classList.remove('show');
+      dots[galleryIdx].classList.remove('active');
+      galleryIdx = (galleryIdx + 1) % cards.length;
+      cards[galleryIdx].classList.add('show');
+      dots[galleryIdx].classList.add('active');
+    }, 2800);
+  }
+
+  // ===== FALLING PETALS BACKGROUND =====
+  const heartBg = document.getElementById('heartBg');
+  const heartChars = ['♥','❀','✿','♡'];
+  function spawnHeart(){
+    const h = document.createElement('div');
+    h.className = 'fh';
+    h.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+    h.style.left = Math.random()*100 + 'vw';
+    h.style.fontSize = (14 + Math.random()*16) + 'px';
+    const duration = 6 + Math.random()*5;
+    h.style.animationDuration = duration + 's';
+    heartBg.appendChild(h);
+    setTimeout(()=>h.remove(), duration*1000);
+  }
+  setInterval(spawnHeart, 600);
+</script>
+
+</body>
+</html>
