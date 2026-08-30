@@ -245,10 +245,6 @@
   <h1>Album My Love</h1>
   <div class="scrapbook" id="scrapbook"></div>
   <div class="dots" id="dots"></div>
-  <label class="file-btn">📸 tempel foto
-    <input type="file" id="photoInput" accept="image/*" multiple>
-  </label>
-  <div class="gallery-hint">pilih foto dari galeri kamu, langsung nempel di sini</div>
   <button class="cta" onclick="goTo(3)">Lanjut →</button>
 </div>
 
@@ -276,7 +272,6 @@
   <div class="final-heart">💌</div>
   <div class="bubble"><p id="finalNote">Makasih udah baca sampai sini. Aku sayang kamu, sesederhana dan seheboh itu.</p></div>
   <button class="cta" onclick="goTo(0); reopenBook();">Baca ulang</button>
-  <button class="ghost" id="downloadBtn">💾 simpan buku ini (dengan foto)</button>
 </div>
 
 <script>
@@ -379,7 +374,7 @@ function renderGallery(){
     card.className='washi-photo'+(i===0?' show':'');
     const rot=(i%2===0?-6:6)+(Math.random()*3-1.5);
     card.style.setProperty('--r', rot+'deg');
-    card.innerHTML = `<div class="tape"></div><img src="${p.src}" alt=""><div class="cap" contenteditable="true">${p.cap||'momen receh kita'}</div>`;
+    card.innerHTML = `<div class="tape"></div><img src="${p.src}" alt=""><div class="cap">${p.cap||'momen receh kita'}</div>`;
     stackEl.appendChild(card);
     const dot=document.createElement('div'); dot.className='dot'+(i===0?' active':''); dotsEl.appendChild(dot);
   });
@@ -395,17 +390,6 @@ function renderGallery(){
   }
 }
 renderGallery();
-document.getElementById('photoInput').addEventListener('change', (e)=>{
-  const files = Array.from(e.target.files||[]);
-  let remaining = files.length;
-  if(!remaining) return;
-  files.forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = (ev)=>{ photos.push({src:ev.target.result, cap:'momen receh kita'}); remaining--; if(remaining===0) renderGallery(); };
-    reader.readAsDataURL(file);
-  });
-  e.target.value='';
-});
 
 /* ===== meter + confetti ===== */
 const meterFill = document.getElementById('meterFill');
@@ -453,18 +437,6 @@ function burstConfetti(){
     setTimeout(()=>p.remove(), 1500);
   }
 }
-
-/* ===== save / export with photos baked in ===== */
-document.getElementById('downloadBtn').addEventListener('click', () => {
-  const clone = document.documentElement.cloneNode(true);
-  const html = '<!DOCTYPE html>\n' + clone.outerHTML;
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'buku-harian-kita.html';
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-});
 
 /* ===== floating stickers bg ===== */
 const floaters = document.getElementById('floaters');
